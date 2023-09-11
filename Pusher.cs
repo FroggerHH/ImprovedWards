@@ -24,9 +24,11 @@ public class Pusher : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         if (!ward || !ward.m_nview.IsOwner()) return;
-        if (PrivateArea.CheckAccess(other.transform.position, flash: false)) return;
         var character = other.GetComponent<Character>();
         if (!character) return;
+        
+        if (character.IsPlayer() && PrivateArea.CheckAccess(other.transform.position, flash: false)) return;
+        
         var data = character.GetAdditionalData();
         if (!data.collider) data.Init(character);
 

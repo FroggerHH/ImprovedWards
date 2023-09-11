@@ -111,6 +111,7 @@
         <Compile Include="Const.cs" />
         <Compile Include="Extensions\GameObjectExtension.cs" />
         <Compile Include="Extensions\ListExtension.cs" />
+        <Compile Include="Extensions\MonoBehaviourExtension.cs" />
         <Compile Include="Extensions\RendererExtension.cs" />
         <Compile Include="Extensions\TransformExtension.cs" />
         <Compile Include="Extensions\Vector3Extension.cs" />

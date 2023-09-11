@@ -18,7 +18,8 @@ internal class Plugin : BaseUnityPlugin
     {
         _self = this;
         configSync.AddLockingConfigEntry(config("General", "LockConfig", true, string.Empty));
-        //noMonstersConfig = config("General", "No monsters in wards", noMonsters, string.Empty);
+        useRangeCircleConfig = config("General", "Use range circle", useRangeCircle, string.Empty);
+        permanentRangeCircleConfig = config("General", "Permanent range circle", permanentRangeCircle, string.Empty);
 
         Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), ModGUID);
     }
@@ -126,9 +127,11 @@ internal class Plugin : BaseUnityPlugin
 
     #region configs
 
-    public static ConfigEntry<bool> noMonstersConfig;
+    public static ConfigEntry<bool> permanentRangeCircleConfig;
+    public static ConfigEntry<bool> useRangeCircleConfig;
 
-    public static bool noMonsters;
+    public static bool permanentRangeCircle = false;
+    public static bool useRangeCircle = true;
 
     #endregion
 
@@ -137,7 +140,8 @@ internal class Plugin : BaseUnityPlugin
         Task task = null;
         task = Task.Run(() =>
         {
-            noMonsters = noMonstersConfig.Value;
+            permanentRangeCircle = permanentRangeCircleConfig.Value;
+            useRangeCircle = useRangeCircleConfig.Value;
 
 
             UpdateWards();
@@ -149,10 +153,6 @@ internal class Plugin : BaseUnityPlugin
 
     private void UpdateWards()
     {
-        ZNetScene.instance?.GetPrefab(wardPrefabName).transform.FindChildByName(noMonsterAreaObjName)?.gameObject
-            .SetActive(noMonsters);
-        foreach (var area in PrivateArea.m_allAreas)
-            area.transform.FindChildByName(noMonsterAreaObjName)?.gameObject.SetActive(noMonsters);
     }
 
     #endregion

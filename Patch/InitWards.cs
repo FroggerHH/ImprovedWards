@@ -36,8 +36,7 @@ public static class InitWards
         newWard.name = vanilaWard.name;
         var newShield = Instantiate(shield, newWard.transform);
         newShield.name = "WardShield";
-        var noMonsterArea = newShield.transform.FindChildByName(noMonsterAreaObjName).gameObject;
-        noMonsterArea.SetActive(noMonsters);
+        Destroy(newShield.transform.FindChildByName(noMonsterAreaObjName).gameObject);
         var shieldMeshRenderer = newShield.GetComponent<MeshRenderer>();
         shieldMeshRenderer.sharedMaterial.color = wardShieldColor;
         var collider = shieldMeshRenderer.gameObject.AddComponent<SphereCollider>();
@@ -48,7 +47,6 @@ public static class InitWards
         var privateAreaComponent = newWard.GetComponent<PrivateArea>();
         var data = privateAreaComponent.GetAdditionalData();
         data.shield = shieldMeshRenderer;
-        data.noMonsterArea = noMonsterArea;
         Const.effectPrefabs = privateAreaComponent.m_flashEffect.m_effectPrefabs.Select(x => x).ToArray();
         privateAreaComponent.m_flashEffect.m_effectPrefabs = new EffectList.EffectData[0];
 

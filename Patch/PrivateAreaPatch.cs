@@ -3,6 +3,7 @@ using Extensions;
 using HarmonyLib;
 using UnityEngine;
 using static ImprovedWards.Const;
+using static ImprovedWards.Plugin;
 using static EffectList;
 
 namespace ImprovedWards.Patch;
@@ -16,10 +17,11 @@ public static class PrivateAreaPatch
     private static void InitWardData(PrivateArea __instance)
     {
         var data = __instance.GetAdditionalData();
-        data.noMonsterArea =
-            __instance.transform.FindChildByName(noMonsterAreaObjName).gameObject;
+        if (!data.shield) return;
         data.shield =
             __instance.transform.FindChildByName("WardShield").GetComponent<MeshRenderer>();
+
+        __instance.m_areaMarker.SetActive(true);
     }
 
     [HarmonyPatch(nameof(PrivateArea.RPC_FlashShield))]
@@ -47,5 +49,21 @@ public static class PrivateAreaPatch
         data.shield.transform.localScale = Vector3.one * __instance.m_radius * 2.06f;
         data.shield.sharedMaterial.color = wardShieldColor;
         __instance.m_areaMarker.m_radius = __instance.m_radius;
+    }
+
+    [HarmonyPatch(nameof(PrivateArea.HideMarker))]
+    [HarmonyPrefix]
+    private static bool DoNotHideAreaMarker(PrivateArea __instance)
+    {
+        if (!__instance.GetAdditionalData().shield) return true;
+        return !permanentRangeCircle;
+    }
+
+    [HarmonyPatch(nameof(PrivateArea.ShowAreaMarker))]
+    [HarmonyPrefix]
+    private static bool ShowOrNotAreaMarker(PrivateArea __instance)
+    {
+        if (!__instance.GetAdditionalData().shield) return true;
+        return useRangeCircle;
     }
 }
